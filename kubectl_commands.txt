@@ -19,7 +19,7 @@ kubectl get deployments
 kubectl apply -f <file>.yaml
 kubectl delete deployment <deployment-name>
 kubectl scale deployment <name> --replicas=3
-
+kubectl rollout restart deployment flask-deployment
 
 ---- DOCKER COMMANDS ----
 docker build -t flask-k8s-app .
