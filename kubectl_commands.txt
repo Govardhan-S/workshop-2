@@ -1,1 +1,24 @@
+--------- KUBECTL COMMANDS --------
+
+----Cluster info-----
+kubectl config use-context docker-desktop
+kubectl config get-contexts
+kubectl config current-context
+kubectl cluster-info
+
+-----  Work with Pods -----
+kubectl get pods
+kubectl get pods --all-namespaces
+kubectl describe pod <pod-name>
+kubectl logs <pod-name>
+kubectl exec -it <pod-name> -- /bin/bash
+
+
+----- Work with Deployments -----
+kubectl get deployments
+kubectl apply -f <file>.yaml
+kubectl delete deployment <deployment-name>
+kubectl scale deployment <name> --replicas=3
+
+
 
