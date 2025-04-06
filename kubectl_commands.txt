@@ -21,4 +21,10 @@ kubectl delete deployment <deployment-name>
 kubectl scale deployment <name> --replicas=3
 
 
+---- DOCKER COMMANDS ----
+docker build -t flask-k8s-app .
+docker tag flask-k8s-app govardhan1617/flask-k8s-app:latest 
+docker push  govardhan1617/flask-k8s-app:latest 
+
+
 
