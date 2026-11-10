@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: flask-k8s-app:local
+    container_name: flask-local
+    ports:
+      - "5000:5000"
+    restart: unless-stopped

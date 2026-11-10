@@ -1,0 +1,73 @@
+name: Local CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-test-and-deploy:
+    runs-on: self-hosted
+    environment: local
+    env:
+      IMAGE_NAME: govardhan1617/flask-k8s-app
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Validate Python app
+        run: |
+          python -m compileall app.py
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+      - name: Ensure Kubernetes context is available
+        run: |
+          kubectl config use-context docker-desktop || true
+          kubectl config current-context
+          kubectl cluster-info
+
+      - name: Deploy to local Kubernetes
+        run: |
+          kubectl apply -f deployment.yaml
+          kubectl apply -f service.yaml
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/flask-deployment --timeout=180s
+          kubectl get pods
+          kubectl get svc
+
+      - name: Show app URL
+        run: |
+          echo "Application is available on the local NodePort: http://localhost:30007"
