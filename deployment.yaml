@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: flask-container
-          image: govardhan1617/flask-k8s-app:latest # Use full image path if pushed to Docker Hub
+          image: ghcr.io/govardhan-s/flask-k8s-app:latest
           ports:
             - containerPort: 5000

@@ -53,15 +53,14 @@ It will:
 2. Install Python dependencies
 3. Validate the Python app with `compileall`
 4. Build a Docker image
-5. Push it to Docker Hub using secrets
+5. Push it to GitHub Container Registry (GHCR) using the workflow's `GITHUB_TOKEN`
 6. Apply the Kubernetes manifests to the local cluster
 7. Wait for rollout completion
 
-### Required GitHub secrets
+### GHCR and local cluster setup
 
-Set these in the repository settings:
+The workflow needs `contents: read` and `packages: write` permissions, which are declared in the workflow. No Docker Hub credentials are needed.
 
-- `DOCKERHUB_USERNAME`
-- `DOCKERHUB_TOKEN`
+GHCR packages are private by default. For the local Kubernetes cluster to pull the image, either make the `flask-k8s-app` package public in GitHub's package settings, or configure a Kubernetes `imagePullSecret` with a GitHub token that has `read:packages` access.
 
 The workflow uses a self-hosted runner and assumes a local Kubernetes context such as Docker Desktop Kubernetes is available on that machine.
